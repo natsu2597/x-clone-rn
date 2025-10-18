@@ -12,17 +12,26 @@ export const getUserProfile = asyncHandler(async (req,res) => {
 
 export const updateUserProfile = asyncHandler(async (req, res) => {
     const { userId } = getAuth(req);
-    
+    //updates handler
+    const allowedUpdates = ['firstName', 'lastName', 'dp', 'bannerImage', 'bio', 'location'];
+    const updates = {};
+    for (const key of allowedUpdates) {
+        if (req.body[key] !== undefined) {
+            updates[key] = req.body[key];
+        }
+    }
+
+
     const user = await User.findOneAndUpdate(
         { clerkId : userId }
-    , req.body, { new : true })
+    , updates, { new : true })
     
     if(!user) return res.status(404).json({ error : "User not found"})
         
         return res.status(200).json({ user });
 })
 
-export const syncUser = asyncHandler(async() => {
+export const syncUser = asyncHandler(async(req, res) => {
     const { userId } = getAuth(req);
 
     const existingUser = await User.findOne({ clerkId : userId });
@@ -46,21 +55,21 @@ export const syncUser = asyncHandler(async() => {
     res.status(201).json({ user, messsage: "User created successfully"});
 })
 
-export const getCurrentUser = asyncHandler(async () => {
+export const getCurrentUser = asyncHandler(async (req, res) => {
     const { userId } = getAuth(req);
-    const user = await User.findOne({ clerkClient : userId });
+    const user = await User.findOne({ clerkId : userId });
 
     if(!user) return res.status(404).json({ message : "User not found"});
     res.status(200).json({ user });
 })
 
-export const followUser = asyncHandler(async () => {
+export const followUser = asyncHandler(async (req,res) => {
     const { userId } = getAuth(req);
     const { targetUserId } = req.params
 
     if(userId === targetUserId ) return res.status(200).json({ error : "You cannot follow yourself duh..."})
 
-    const currentUser = await User.findOne({ clerkClient : userId });
+    const currentUser = await User.findOne({ clerkId : userId });
     const targetUser = await User.findById(targetUserId);
 
     const isFollowing = currentUser.following.includes(targetUserId);
