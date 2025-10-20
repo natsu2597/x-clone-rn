@@ -8,6 +8,10 @@ export const arcjetMiddleware = async (req, res, next) => {
 
         if(decision.isDenied()){
             if(decision.reason.isRateLimit()){
+                const ttlSeconds = decision.ttl ?? decision.results?.find(r => r.reason?.isRateLimit?.())?.ttl;
+            if(ttlSeconds != null) {
+                res.setHeader("Retry-After", String(Math.ceil(ttlSeconds)));
+            }
                 return res.status(429).json({
                     error : "Too many Requests",
                     message : "Rate Limit Exceeded"
