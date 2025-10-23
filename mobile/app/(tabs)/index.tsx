@@ -5,6 +5,7 @@ import SignOutButton from '@/components/SignOutButton'
 import { useSyncUser } from '@/hooks/useSyncUser'
 import { Ionicons } from '@expo/vector-icons'
 import PostMaker from '@/components/PostMaker'
+import PostList from '@/components/PostList'
 
 const HomeScreen = () => {
   useSyncUser();
@@ -21,6 +22,7 @@ const HomeScreen = () => {
       contentContainerStyle={{paddingBottom : 80}}
       >
         <PostMaker />
+        <PostList />
       </ScrollView>
     </SafeAreaView>
   )
