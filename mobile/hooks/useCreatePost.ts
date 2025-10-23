@@ -30,6 +30,7 @@ export const useCreatePost = () => {
                 } 
 
                 const mimeType = mimeTypeMap[fileType] || "image/jpeg";
+                
                 formData.append("image", {
                     uri: postData.imageUri,
                     name: `image.${fileType}`,
