@@ -30,7 +30,7 @@ export interface Notification {
     username: string;
     firstName: string;
     lastName: string;
-    profilePicture?: string;
+    dp?: string;
   };
   to: string;
   type: "like" | "comment" | "follow";
