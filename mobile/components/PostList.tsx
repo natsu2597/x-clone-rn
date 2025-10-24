@@ -4,6 +4,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { usePosts } from '@/hooks/usePosts';
 import { Post } from '@/types';
 import PostCard from './PostCard';
+import CommentModal from './CommentModal';
 
 const PostList = ({ username }: { username? : string }) => {
     const { currentUser } = useCurrentUser();
@@ -51,8 +52,10 @@ const PostList = ({ username }: { username? : string }) => {
         onDelete={deletePost}
         currentUser={currentUser}
         isLiked={checkIsLiked(post.likes, currentUser)}
+        onComment={(p: Post) => setSelectedPostId(p._id)}
         />
     ))}
+    <CommentModal selectedPost={selectedPost} onClose={() => setSelectedPostId(null)}/>
     </>
   )
 }
