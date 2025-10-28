@@ -35,9 +35,9 @@ export const useProfile = () => {
 
     const followMutation = useMutation({
         mutationFn : (targetUserId : string) => userApi.toggleFollow(api,targetUserId),
-        onSuccess : (_, targetUserId) => {
+        onSuccess : () => {
             queryClient.invalidateQueries({ queryKey : ["authUser"] });
-            queryClient.invalidateQueries({ queryKey: ["userProfile", targetUserId] });
+            queryClient.invalidateQueries({ queryKey: ["userProfile"] });
 
             Alert.alert("Success","Followed Successfully!");
         },

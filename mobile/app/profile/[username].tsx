@@ -9,10 +9,12 @@ import {format} from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
 import { useState } from "react";
 import FollowButton from "@/components/FollowButton";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 
 export default function ProfileScreen(){
-    const { username, id, followers } = useLocalSearchParams<{ username : string, id : string, followers : string[] }>();
+    const { currentUser : authUser } = useCurrentUser();
+    const { username, id } = useLocalSearchParams<{ username : string, id : string}>();
 
     const  { userProfile : currentUser, isLoading, error, refetch : refetchProfile } = useFetchUserProfile(username);
 
@@ -65,7 +67,7 @@ export default function ProfileScreen(){
             className='w-32 h-32 rounded-full border-4 border-white'
             />
             <FollowButton
-            isFollowed={followers?.includes(id) ?? false}
+            isFollowed={authUser?.following?.includes(id) ?? false}
             id={id}
             isFollowing={isFollowing}
             handleFollow={handleFollow}

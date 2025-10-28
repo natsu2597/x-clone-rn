@@ -33,7 +33,7 @@ const PostCard = ({ currentUser, onDelete, onLike, post, isLiked, onComment } : 
                 <TouchableOpacity  onPress={() =>
                     router.push({
                     pathname: isOwnPost ? "/profile" : "/profile/[username]",
-                    params: { username: post.user.username, id : post.user._id, followers : post.user.followers },
+                    params: { username: post.user.username, id : post.user._id },
                     })
                     }
                     className="flex-row items-start">
