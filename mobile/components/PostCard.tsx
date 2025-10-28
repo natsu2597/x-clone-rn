@@ -15,8 +15,6 @@ interface PostCardProps {
 }
 
 const PostCard = ({ currentUser, onDelete, onLike, post, isLiked, onComment } : PostCardProps) => {
-
-
     const isOwnPost =  post.user._id === currentUser._id;
     const handleDelete = () => {
         Alert.alert("Delete Post","Are you sure you wanna delete this post?", [
@@ -35,7 +33,7 @@ const PostCard = ({ currentUser, onDelete, onLike, post, isLiked, onComment } : 
                 <TouchableOpacity  onPress={() =>
                     router.push({
                     pathname: isOwnPost ? "/profile" : "/profile/[username]",
-                    params: { username: post.user.username },
+                    params: { username: post.user.username, id : post.user._id, followers : post.user.followers },
                     })
                     }
                     className="flex-row items-start">

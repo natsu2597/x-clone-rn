@@ -10,8 +10,6 @@ import * as ImagePicker from "expo-image-picker";
 export const useProfile = () => {
     const api = useApiClient();
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-    const queryClient = useQueryClient();
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [formData,setFormData] = useState({
         firstName : "",
@@ -21,6 +19,7 @@ export const useProfile = () => {
     });
     const [dpFormData, setDpFormData] = useState<{ dp : string | null}>({ dp : null });
     const {currentUser} = useCurrentUser();
+    const queryClient = useQueryClient();
 
     const updateProfileMutation = useMutation({
         mutationFn : (profileData : any) => userApi.updateProfile(api,profileData),
@@ -33,6 +32,19 @@ export const useProfile = () => {
             Alert.alert("Error","Failed to update Profile")
         }
     });
+
+    const followMutation = useMutation({
+        mutationFn : (targetUserId : string) => userApi.toggleFollow(api,targetUserId),
+        onSuccess : (_, targetUserId) => {
+            queryClient.invalidateQueries({ queryKey : ["authUser"] });
+            queryClient.invalidateQueries({ queryKey: ["userProfile", targetUserId] });
+
+            Alert.alert("Success","Followed Successfully!");
+        },
+        onError : (error : any) => {
+            Alert.alert("Error","Failed to follow")
+        }
+    })
 
     const updateDpMutation = useMutation({
         mutationFn : async (imageUri : string) =>
@@ -96,6 +108,16 @@ export const useProfile = () => {
     const updateFormField = (field: string, value : string) => {
         setFormData((prev) => ({...prev, [field] : value}))
     }
+
+    const handleFollow = (targetUserId : string) => {
+        followMutation.mutate(targetUserId)
+
+    };
+
+    const checkIsFollowed = (followers: string[], id : string) => {
+        const isFollowed = followers?.includes(id);
+        return isFollowed;
+    };
     return{
         isEditModalVisible,
         formData,
@@ -106,7 +128,10 @@ export const useProfile = () => {
         handleImagePicker,
         selectedImage,
         dpFormData,
+        checkIsFollowed,
         isUpdating : updateProfileMutation.isPending,
+        isFollowing : followMutation.isPending,
+        handleFollow,
         refetch : () => queryClient.invalidateQueries({ queryKey : ["authUser"] }),
     }
 
