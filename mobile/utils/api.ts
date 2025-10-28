@@ -52,8 +52,6 @@ export const userApi = {
             name : `profile.${fileType}`,
             type : mimeType,
         } as any)
-        
-        console.log("Uploading DP:", imageUri);
 
         try {
         const res = await api.put("/users/profile/dp", formData, {
@@ -63,12 +61,13 @@ export const userApi = {
         });
         console.log("Upload response:", res.data);
         return res.data;
-  } catch (err: any) {
-    console.error("Upload failed:", err.response?.data || err.message);
-    throw err;
-  }
+        } catch (err: any) {
+        console.error("Upload failed:", err.response?.data || err.message);
+        throw err;
+    }
     },
-    getUserProfile : (api : AxiosInstance, username : string) => api.get(`/users/profile/${username}`)
+    getUserProfile : (api : AxiosInstance, username : string) => api.get(`/users/profile/${username}`),
+    toggleFollow : (api : AxiosInstance, targetUserId : string) => api.post(`/users/follow/${targetUserId}`),
 }
 
 export const postApi = {

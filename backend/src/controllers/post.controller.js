@@ -47,7 +47,7 @@ export const getUserPosts = asyncHandler(async (req,res) => {
     if(!user) return res.status(404).json({ error : "User not found"});
 
     const posts = await Post.find({ user : user._id })
-    .populate("user", "username firstName lastName dp")
+    .populate("user", "username firstName lastName dp followers following")
     .populate({
         path : "comments",
         populate : {

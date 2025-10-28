@@ -6,12 +6,19 @@ import { Feather } from '@expo/vector-icons';
 import  PostList from '@/components/PostList';
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import {format} from "date-fns";
+import { useProfile } from "@/hooks/useProfile";
+import { useState } from "react";
+import FollowButton from "@/components/FollowButton";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 
 export default function ProfileScreen(){
-    const { username } = useLocalSearchParams<{ username : string }>();
+    const { currentUser : authUser } = useCurrentUser();
+    const { username, id } = useLocalSearchParams<{ username : string, id : string}>();
 
     const  { userProfile : currentUser, isLoading, error, refetch : refetchProfile } = useFetchUserProfile(username);
+
+    const { handleFollow, isFollowing, checkIsFollowed } = useProfile();
 
     const { posts : userPosts, refetch : refetchPosts, isLoading : isRefetching } = usePosts(username);
     const insets = useSafeAreaInsets();
@@ -30,7 +37,7 @@ export default function ProfileScreen(){
           </Text>
           <Text className='text-gray-500 text-sm'>{userPosts.length} Posts</Text>
         </View>
-        <TouchableOpacity onPress={() => router.push("/")}>
+        <TouchableOpacity onPress={() => router.back()}>
           <Feather name="arrow-left" size={22} color="#000" />
         </TouchableOpacity>
       </View>
@@ -59,12 +66,18 @@ export default function ProfileScreen(){
             <Image source={{ uri : currentUser.dp }}
             className='w-32 h-32 rounded-full border-4 border-white'
             />
+            <FollowButton
+            isFollowed={authUser?.following?.includes(id) ?? false}
+            id={id}
+            isFollowing={isFollowing}
+            handleFollow={handleFollow}
+            />
             
           </View>
           <View className='mb-4'>
             <View className='flex-row items-center mb-1'>
               <Text className='text-xl font-bold text-gray-900 mr-1'>
-                {currentUser.firstName} {currentUser.lastname}
+                {currentUser.firstName} {currentUser.lastName}
               </Text>
               <Feather name='check-circle' size={20} color="#1DA1F2" />
             </View>

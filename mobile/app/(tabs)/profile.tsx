@@ -27,7 +27,6 @@ const ProfileScreen = () => {
     formData,
     saveProfile,
     updateFormField,
-    changeDp,
     handleImagePicker,
     selectedImage,
     isUpdating,
@@ -90,9 +89,9 @@ const ProfileScreen = () => {
           <View className='mb-4'>
             <View className='flex-row items-center mb-1'>
               <Text className='text-xl font-bold textgray-900 mr-1'>
-                {currentUser.firstName} {currentUser.lastname}
+                {currentUser.firstName} {currentUser.lastName}
               </Text>
-              <Feather name='check-circle' size={20} color="1DA1F2" />
+              <Feather name='check-circle' size={20} color="#1DA1F2" />
             </View>
             <Text className='text-gray-500 mb-2'>
               @{currentUser.username}
