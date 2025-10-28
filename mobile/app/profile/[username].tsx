@@ -1,40 +1,26 @@
-import { View, Text, ActivityIndicator, ScrollView, RefreshControl, Image, TouchableOpacity, Alert } from 'react-native'
-import React from 'react'
-import { useCurrentUser } from '@/hooks/useCurrentUser'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { usePosts } from '@/hooks/usePosts';
-import { useProfile } from '@/hooks/useProfile';
-import SignOutButton from '@/components/SignOutButton';
+import { useFetchUserProfile } from "@/hooks/useFetchUserProfile";
+import { useApiClient } from "@/utils/api";
+import { router, useLocalSearchParams } from "expo-router";
+import { usePosts } from "@/hooks/usePosts";
+import { View, Text, ActivityIndicator, ScrollView, RefreshControl, Image, TouchableOpacity } from 'react-native'
+import SignOutButton from "@/components/SignOutButton";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Feather } from '@expo/vector-icons';
-import {format} from "date-fns";
 import  PostList from '@/components/PostList';
-import EditFormModal from '@/components/EditFormModal';
-import * as ImagePicker from 'expo-image-picker';
-
-const ProfileScreen = () => {
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {format} from "date-fns";
 
 
-  const { currentUser, isLoading} = useCurrentUser();
-  const insets = useSafeAreaInsets();
+export default function ProfileScreen(){
+    const { username } = useLocalSearchParams<{ username : string }>();
+    const api = useApiClient();
 
-  const { posts : userPosts, refetch : refetchPosts, isLoading : isRefetching } = usePosts(currentUser?.username);
+    const  { userProfile : currentUser, isLoading, error, refetch : refetchProfile } = useFetchUserProfile(username);
 
+    const { posts : userPosts, refetch : refetchPosts, isLoading : isRefetching } = usePosts(username);
+    const insets = useSafeAreaInsets();
 
-  const {
-    isEditModalVisible,
-    openEditModal,
-    closeEditModal,
-    formData,
-    saveProfile,
-    updateFormField,
-    changeDp,
-    handleImagePicker,
-    selectedImage,
-    isUpdating,
-    refetch : refetchProfile,
-  } = useProfile();
-
-  if(isLoading) return (
+    if(isLoading) return (
     <View className='flex-1 bg-white items-center justify-center'>
       <ActivityIndicator size="large" color="#1DA1F2"/>
     </View>
@@ -48,7 +34,9 @@ const ProfileScreen = () => {
           </Text>
           <Text className='text-gray-500 text-sm'>{userPosts.length} Posts</Text>
         </View>
-        <SignOutButton />
+        <TouchableOpacity onPress={() => router.push("/")}>
+          <Feather name="arrow-left" size={22} color="#000" />
+        </TouchableOpacity>
       </View>
 
       <ScrollView 
@@ -72,20 +60,10 @@ const ProfileScreen = () => {
         />
         <View className='px-4 pb-4 border-b border-gray-100'>
           <View className='flex-row justify-between items-end -mt-16 mb-4'>
-            <TouchableOpacity onPress={handleImagePicker}>
-              {isUpdating ? (
-                <ActivityIndicator size="small" color="#000" />
-              ): (
-                <Image source={{ uri : currentUser.dp }}
-                className='w-32 h-32 rounded-full border-4 border-white'
-                />
-              )}
-              
-            </TouchableOpacity>
+            <Image source={{ uri : currentUser.dp }}
+            className='w-32 h-32 rounded-full border-4 border-white'
+            />
             
-            <TouchableOpacity className='border border-gray-300 px-6 py-2 rounded-full bg-black' onPress={openEditModal}>
-              <Text className='font-semibold text-white'>Edit Profile</Text>
-            </TouchableOpacity>
           </View>
           <View className='mb-4'>
             <View className='flex-row items-center mb-1'>
@@ -127,9 +105,6 @@ const ProfileScreen = () => {
         </View>
         <PostList username={currentUser?.username} />
       </ScrollView>
-      <EditFormModal isVisible={isEditModalVisible} isUpdating={isUpdating} formData={formData} onClose={closeEditModal} saveProfile={saveProfile} updateFormField={updateFormField} />
     </SafeAreaView>
   )
 }
-
-export default ProfileScreen

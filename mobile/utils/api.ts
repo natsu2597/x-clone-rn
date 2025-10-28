@@ -4,6 +4,8 @@ import { useAuth } from "@clerk/clerk-expo";
 
 const API_BASE_URL = "https://x-clone-rn-umber.vercel.app/api";
 
+// const API_BASE_URL = "http://localhost:5001/api";
+
 
 export const createApiClient = (getToken : () => Promise<string | null>): AxiosInstance => {
     const api = axios.create({ 
@@ -32,7 +34,9 @@ export const useApiClient = () : AxiosInstance => {
 export const userApi = {
     syncUser : (api: AxiosInstance) => api.post("/users/sync"),
     getCurrentUser : (api : AxiosInstance) => api.get("/users/me"),
-    updateProfile : (api : AxiosInstance, data: any) => api.put("/users/profile",data)
+    updateProfile : (api : AxiosInstance, data: any) => api.put("/users/profile",data),
+    updateDp : (api : AxiosInstance, imageUri : string) => api.put("/users/profile/dp", { imageUri }),
+    getUserProfile : (api : AxiosInstance, username : string) => api.get(`/users/profile/${username}`)
 }
 
 export const postApi = {

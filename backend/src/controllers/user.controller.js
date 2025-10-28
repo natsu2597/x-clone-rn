@@ -28,7 +28,39 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     
     if(!user) return res.status(404).json({ error : "User not found"})
         
-        return res.status(200).json({ user });
+    return res.status(200).json({ user });
+});
+
+export const changeUserDp = asyncHandler(async (req,res) => {
+    const { userId } = getAuth(req);
+    const imageFile = req.file;
+    let imageUrl = "";
+
+    if(imageFile){
+        try {
+            const base64Image = `data:${imageFile.mimetype};base64,${imageFile.buffer.toString("base64")}`;
+            const uploadResponse = await cloudinary.uploader.upload(base64Image,{
+                            folder : "user_dps",
+                            resource_type : "image",
+                            transformation: [
+                                { width : 320, height : 320, crop : 'limit'},
+                                { quality : "auto" },
+                                { format : "auto" }
+                            ]
+            });
+            imageUrl  = uploadResponse.secure_url;
+        } catch (error) {
+            console.error("Cloudinary upload error:", uploadError);
+            return res.status(400).json({ error : "Error uploading image"});
+        }
+    }
+    const user = await User.findOneAndUpdate(
+        { clerkId : userId }
+    , { dp : imageUrl }, { new : true }
+    )
+    if(!user) return res.status(404).json({ error : "User not found"})
+        
+    return res.status(200).json({ user });
 })
 
 export const syncUser = asyncHandler(async(req, res) => {
