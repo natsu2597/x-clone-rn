@@ -1,6 +1,6 @@
 import { useApiClient, userApi } from "@/utils/api"
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { use, useState } from "react"
+import { useState } from "react"
 import { useCurrentUser } from "./useCurrentUser";
 import { Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -9,7 +9,7 @@ import * as ImagePicker from "expo-image-picker";
 
 export const useProfile = () => {
     const api = useApiClient();
-    const [selectedImage, setSelectedImage] = useState<string | null>("");
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const queryClient = useQueryClient();
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -55,7 +55,7 @@ export const useProfile = () => {
     
             if(permissionResult.status !== "granted"){
                 const source = "image library"
-                Alert.alert("Permission needed",100 + `Please grant permission to access the ${source}`);
+                Alert.alert("Permission needed", `Please grant permission to access the ${source}`);
                 return
             }
     
@@ -80,9 +80,6 @@ export const useProfile = () => {
             } 
         }
     
-        const changeDp = ( imageUri : string) => {
-            setDpFormData({ dp : imageUri });
-        };
 
     const openEditModal = () => {
         if(currentUser){
@@ -109,7 +106,6 @@ export const useProfile = () => {
         handleImagePicker,
         selectedImage,
         dpFormData,
-        changeDp,
         isUpdating : updateProfileMutation.isPending,
         refetch : () => queryClient.invalidateQueries({ queryKey : ["authUser"] }),
     }

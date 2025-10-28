@@ -50,7 +50,7 @@ export const changeUserDp = asyncHandler(async (req,res) => {
             });
             imageUrl  = uploadResponse.secure_url;
         } catch (error) {
-            console.error("Cloudinary upload error:", uploadError);
+            console.error("Cloudinary upload error:", error);
             return res.status(400).json({ error : "Error uploading image"});
         }
     }
