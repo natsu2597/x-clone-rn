@@ -60,7 +60,7 @@ export const useProfile = () => {
             }
     
             const pickerOptions = {
-                allowEditing : true,
+                allowsEditing : true,
                 aspect : [1,1] as [number,number],
                 quality : 0.8,
             }

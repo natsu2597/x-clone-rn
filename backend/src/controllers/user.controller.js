@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler"
 import User from "../models/user.model.js"
 import { clerkClient, getAuth } from "@clerk/express";
 import Notification from "../models/notification.model.js"
+import cloudinary from "../config/cloudinary.js"
 
 export const getUserProfile = asyncHandler(async (req,res) => {
     const { username } = req.params;
