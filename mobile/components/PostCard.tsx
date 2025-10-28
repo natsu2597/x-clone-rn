@@ -3,6 +3,7 @@ import React from 'react'
 import { Post, User } from '@/types';
 import { formatDate, formatNumber } from '@/utils/formatter';
 import { AntDesign, Feather } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 interface PostCardProps {
     post : Post;
@@ -31,9 +32,18 @@ const PostCard = ({ currentUser, onDelete, onLike, post, isLiked, onComment } : 
     return (
         <View className='border-b border-gray-100 bg-white'>
             <View className='flex-row p-4'>
-                <Image source={{ uri : post.user.dp || "" }}
-                className='w-12 h-12 rounded-full mr-3'
-                />
+                <TouchableOpacity  onPress={() =>
+                    router.push({
+                    pathname: isOwnPost ? "/profile" : "/profile/[username]",
+                    params: { username: post.user.username },
+                    })
+                    }
+                    className="flex-row items-start">
+                    <Image source={{ uri : post.user.dp || "" }}
+                    className='w-12 h-12 rounded-full mr-3'
+                    />
+                </TouchableOpacity>
+                
 
                 <View className='flex-1'>
                     <View className='flex-row items-center justify-between mb-1'>
