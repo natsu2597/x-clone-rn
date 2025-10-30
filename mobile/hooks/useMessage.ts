@@ -11,7 +11,7 @@ export const useMessage = (userId? : string) => {
     const queryClient = useQueryClient();
     const { data : chatPartners, isLoading : isLoadingPartner } = useQuery({
         queryKey : ["chatPartners"],
-        queryFn : () => messageApi.getChatPartners(api),
+        queryFn : () => messageApi.getAllContacts(api),
         select : (res) => res.data
     })
 

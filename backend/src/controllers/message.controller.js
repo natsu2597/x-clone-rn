@@ -10,7 +10,7 @@ export const getAllContacts = asyncHandler(async (req, res) => {
     const { userId } = getAuth(req);
     try {
         const filteredContacts = await User.find({ clerkId : { $ne : userId } });
-        res.status(200).json({ filteredContacts });
+        res.status(200).json(filteredContacts);
     } catch (error) {
         console.log("Error fetching contacts", error);
         res.status(500).json({ error: "Server Error" });
