@@ -48,6 +48,10 @@ export const useMessage = (userId? : string) => {
     }
 
     return {
+        content,
+        setContent,
+        selectedImage,
+        setSelectedImage,
         chatPartners,
         isLoadingPartner,
         messages,
