@@ -81,3 +81,11 @@ export const postApi = {
 export const commentApi = {
     createComment : (api : AxiosInstance, postId : string, content : string ) => api.post(`/comments/post/${postId}`, { content })
 }
+
+
+export const messageApi = {
+    getAllContacts : (api : AxiosInstance) => api.get("/messages/contacts"),
+    getChatPartners : (api : AxiosInstance) => api.get("/messages/chats"),
+    getMessagesByUserId : (api : AxiosInstance, userId : string) => api.get(`/messages/${userId}`),
+   sendMessage : (api : AxiosInstance, data : {content : string, imageUri? : string }, receiverId : string ) => api.post(`/messages/send/${receiverId}`,data), 
+}
