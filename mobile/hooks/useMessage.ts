@@ -25,7 +25,9 @@ export const useMessage = (userId? : string) => {
 
     const sendMessageMutation = useMutation({
         mutationFn :async (messageData : {content : string, imageUri? : string}) => messageApi.sendMessage(api,messageData, userId || ""),
-        onSuccess : () => queryClient.invalidateQueries({ queryKey : ["messages", userId]}),
+        onSuccess : () =>{ queryClient.invalidateQueries({ queryKey : ["messages", userId]});
+        queryClient.invalidateQueries({ queryKey : ["chatPartners"]});
+    },
         onError : (error) => {
                 console.error("Failed to send Message", error.message);
                 Alert.alert("Error", "Failed to send Message");

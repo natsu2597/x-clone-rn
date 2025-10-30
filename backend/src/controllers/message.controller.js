@@ -85,6 +85,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
         })
 
         await newMessage.save();
+        return res.status(201).json(newMessage);
     } catch (error) {
         console.error("Error in sendMessage: ", error.message);
         res.status(500).json({ error: "Internal server error" });
@@ -104,14 +105,14 @@ export const getChatPartners = asyncHandler(async (req,res) => {
          const chatPartnerIds = [
             ...new Set(
                 messages.map((msg) =>
-                msg.senderId.toString() === loggedInUserId.toString()
+                msg.senderId.toString() === userId
                 ? msg.receiverId.toString()
                 : msg.senderId.toString()
                 )
             ),
         ];
 
-        const chatPartners = await User.find({ _id: { $in: chatPartnerIds } });
+        const chatPartners = await User.find({ clerkId: { $in: chatPartnerIds } });
         res.status(200).json(chatPartners);
     } catch (error) {
         console.error("Error in getChatPartners: ", error.message);
