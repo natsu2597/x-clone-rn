@@ -3,7 +3,7 @@ import cloudinary from "../config/cloudinary.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
 import { getAuth } from "@clerk/express";
-import cloudinary from "../config/cloudinary.js";
+
 
 
 export const getAllContacts = asyncHandler(async (req, res) => {
