@@ -11,7 +11,7 @@ export const useMessage = (userId? : string) => {
     const queryClient = useQueryClient();
     const { data : chatPartners, isLoading : isLoadingPartner } = useQuery({
         queryKey : ["chatPartners"],
-        queryFn : () => messageApi.getAllContacts(api),
+        queryFn : () => messageApi.getChatPartners(api),
         select : (res) => res.data
     })
 
@@ -27,6 +27,7 @@ export const useMessage = (userId? : string) => {
         mutationFn :async (messageData : {content : string, imageUri? : string}) => messageApi.sendMessage(api,messageData, userId || ""),
         onSuccess : () =>{ queryClient.invalidateQueries({ queryKey : ["messages", userId]});
         queryClient.invalidateQueries({ queryKey : ["chatPartners"]});
+        setContent("");
     },
         onError : (error) => {
                 console.error("Failed to send Message", error.message);
@@ -35,7 +36,7 @@ export const useMessage = (userId? : string) => {
     });
 
     const sendMessage = () => {
-        if(!content && !selectedImage) {
+        if(!content) {
             Alert.alert("Empty Message", "Please enter some content or select an image");
             return;
         }
